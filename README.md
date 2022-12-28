@@ -49,6 +49,7 @@ $ npm install --save @am92/api-crypto
 ## Resources
 * [JOSE Crypto](https://www.npmjs.com/package/@am92/jose-crypto)
 * [Redis](https://www.npmjs.com/package/@am92/redis)
+* [Kms](https://www.npmjs.com/package/@am92/kms)
 
 <br />
 
