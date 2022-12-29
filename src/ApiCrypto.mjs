@@ -25,7 +25,7 @@ async function initialize (validateClient = customValidateClient) {
 }
 
 async function getPublicKey (clientId) {
-  const isValidClient = _validateClientId(clientId)
+  const isValidClient = await _validateClientId(clientId)
   if (!isValidClient) {
     throw new ApiCryptoError({ clientId }, INVALID_CLIENT_ID_ERROR)
   }
@@ -36,7 +36,7 @@ async function getPublicKey (clientId) {
 
 async function decryptKey (clientId = '', ciphertextKey = '') {
   // Validate Clinet ID
-  const isValid = _validateClientId(clientId)
+  const isValid = await _validateClientId(clientId)
   if (!isValid) {
     throw new ApiCryptoError({ clientId }, INVALID_CLIENT_ID_ERROR)
   }

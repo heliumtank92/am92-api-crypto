@@ -24,6 +24,7 @@ export default class ApiCryptoError extends Error {
     const service = `${pkgName}@${pkgVersion}`
 
     this._isCustomError = true
+    this._isApiCryptoError = true
     this.service = service
     this.message = message || eMessage || eMsg || DEFAULT_ERROR_MSG
     this.statusCode = statusCode || eStatusCode || DEFAULT_ERROR_STATUS_CODE

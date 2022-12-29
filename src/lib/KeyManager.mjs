@@ -19,7 +19,7 @@ const KeyManager = {
 export default KeyManager
 
 async function getPublicKey (clientId = '') {
-  if (MODE === 'STATIC') { return STATIC_PUBLIC_KEY }
+  if (MODE === 'STATIC') { return { publicKey: STATIC_PUBLIC_KEY } }
 
   const publicKey = await Redis.getPublicKey(clientId)
   if (publicKey) { return { publicKey } }
@@ -29,7 +29,7 @@ async function getPublicKey (clientId = '') {
 }
 
 async function getPrivateKey (clientId = '') {
-  if (MODE === 'STATIC') { return STATIC_PRIVATE_KEY }
+  if (MODE === 'STATIC') { return { privateKey: STATIC_PRIVATE_KEY } }
 
   const privateKey = await Redis.getPrivateKey(clientId)
   if (privateKey) { return { privateKey } }
