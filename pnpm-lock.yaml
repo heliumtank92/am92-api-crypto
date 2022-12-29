@@ -1,21 +1,21 @@
 lockfileVersion: 5.4
 
 specifiers:
-  '@am92/jose-crypto': ^1.0.2
+  '@am92/jose-crypto': ^1.0.3
   '@am92/kms': ^1.0.2
   '@am92/redis': ^1.0.1
   moment: ^2.29.4
 
 dependencies:
-  '@am92/jose-crypto': 1.0.2
+  '@am92/jose-crypto': 1.0.3
   '@am92/kms': 1.0.2
   '@am92/redis': 1.0.1
   moment: 2.29.4
 
 packages:
 
-  /@am92/jose-crypto/1.0.2:
-    resolution: {integrity: sha512-LONgrRIG4v4c2ilnpMRqJlpjLsVhFJEw+BXSThgV99QV6cnW7t42aEveFG+NxaxUm6x1/9d2OEav5BNf8ZpRYg==}
+  /@am92/jose-crypto/1.0.3:
+    resolution: {integrity: sha512-RoarPXQbB6a6sCsclc22RlIsojkkCYrT9QteYd1Zcut/8KCv7aXyvOJ9zQvPTBYmcPdtl1VguAEJgVBIo0svVw==}
     requiresBuild: true
     dev: false
 
