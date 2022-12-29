@@ -35,6 +35,7 @@ async function getPublicKey (clientId) {
 }
 
 async function decryptKey (clientId = '', ciphertextKey = '') {
+  // Validate Clinet ID
   const isValid = _validateClientId(clientId)
   if (!isValid) {
     throw new ApiCryptoError({ clientId }, INVALID_CLIENT_ID_ERROR)
@@ -53,7 +54,9 @@ async function decryptKey (clientId = '', ciphertextKey = '') {
 async function _validateClientId (clientId) {
   if (!clientId) { return false }
 
+  // Validate if client ids present in config provided
   if (CLIENT_IDS.includes(clientId)) { return true }
 
+  // Call provided validate client functions
   return customValidateClient(clientId)
 }
