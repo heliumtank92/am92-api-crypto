@@ -1,15 +1,18 @@
 import JoseCrypto from '@am92/jose-crypto'
-import API_CRYPTO_CONFIG from './API_CRYPTO_CONFIG.mjs'
 import KeyManager from './lib/KeyManager.mjs'
 import Redis from './lib/Redis.mjs'
+import CONFIG from './CONFIG.mjs'
 
-const { CLIENT_IDS } = API_CRYPTO_CONFIG
+import ApiCryptoError from './ApiCryptoError.mjs'
+import { INVALID_CLIENT_ID_ERROR, PRIVATE_KEY_NOT_FOUND_ERROR } from './ERRORS.mjs'
+
+const { CLIENT_IDS } = CONFIG
 const ApiCrypto = {
   initialize,
   getPublicKey,
   decryptKey,
-  encryptData,
-  decryptData
+  encryptData: JoseCrypto.encryptData,
+  decryptData: JoseCrypto.decryptData
 }
 
 export default ApiCrypto
@@ -23,9 +26,8 @@ async function initialize (validateClient = customValidateClient) {
 
 async function getPublicKey (clientId) {
   const isValidClient = _validateClientId(clientId)
-
   if (!isValidClient) {
-    // TODO: Throw Error
+    throw new ApiCryptoError({ clientId }, INVALID_CLIENT_ID_ERROR)
   }
 
   const { publicKey } = await KeyManager.getPublicKey(clientId)
@@ -34,39 +36,18 @@ async function getPublicKey (clientId) {
 
 async function decryptKey (clientId = '', ciphertextKey = '') {
   const isValid = _validateClientId(clientId)
-
   if (!isValid) {
-    // TODO: Throw Error
+    throw new ApiCryptoError({ clientId }, INVALID_CLIENT_ID_ERROR)
   }
 
   const { privateKey, publicKey, newKey } = await KeyManager.getPrivateKey(clientId)
   if (newKey) {
-    // TODO: Throw Error
-    // const errorObj = { ...PRIVATE_KEY_NOT_FOUND, publicKey }
-    // throw errorObj
+    throw new ApiCryptoError({ publicKey }, PRIVATE_KEY_NOT_FOUND_ERROR)
   }
 
   // Decrypt Key
   const plaintextKey = await JoseCrypto.decryptKey(ciphertextKey, privateKey)
   return plaintextKey
-}
-
-async function encryptData (plaintextKey = '', plaintextData = '') {
-  if (!plaintextKey || !plaintextData) {
-    // TODO: Throw Error
-  }
-
-  const ciphertextData = JoseCrypto.encryptData(plaintextData, plaintextKey)
-  return ciphertextData
-}
-
-async function decryptData (plaintextKey = '', ciphertextData = '') {
-  if (!plaintextKey || !ciphertextData) {
-    // TODO: Throw Error
-  }
-
-  const plaintextData = JoseCrypto.encryptData(ciphertextData, plaintextKey)
-  return plaintextData
 }
 
 async function _validateClientId (clientId) {

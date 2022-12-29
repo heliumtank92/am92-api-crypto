@@ -28,7 +28,9 @@
   },
   "dependencies": {
     "@am92/jose-crypto": "^1.0.2",
-    "@am92/redis": "^1.0.0"
+    "@am92/kms": "^1.0.2",
+    "@am92/redis": "^1.0.1",
+    "moment": "^2.29.4"
   },
   "keywords": []
 }
