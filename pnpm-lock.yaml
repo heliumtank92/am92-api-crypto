@@ -2,13 +2,13 @@ lockfileVersion: 5.4
 
 specifiers:
   '@am92/jose-crypto': ^1.0.3
-  '@am92/kms': ^1.0.2
+  '@am92/kms': ^1.0.3
   '@am92/redis': ^1.0.1
   moment: ^2.29.4
 
 dependencies:
   '@am92/jose-crypto': 1.0.3
-  '@am92/kms': 1.0.2
+  '@am92/kms': 1.0.3
   '@am92/redis': 1.0.1
   moment: 2.29.4
 
@@ -19,8 +19,8 @@ packages:
     requiresBuild: true
     dev: false
 
-  /@am92/kms/1.0.2:
-    resolution: {integrity: sha512-obe84iYj0gTw9OkABWb1ieoRSeROMbkVnLZixUHQR3zjjImI8DERsNfMFy2B2kQnHHsT/wKtbSoruOeXdmYW1g==}
+  /@am92/kms/1.0.3:
+    resolution: {integrity: sha512-Xzx0sNnC4aHiL3aO/0PGShCwJt9T4Pgb1IAeRCuATT9+fc/+H0f+bUlPjI359U3BPVkqVBii0nc1sXvxCEbBvA==}
     requiresBuild: true
     dependencies:
       '@aws-sdk/client-kms': 3.238.0
