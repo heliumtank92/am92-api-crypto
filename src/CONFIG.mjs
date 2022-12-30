@@ -21,7 +21,7 @@ const {
   API_CRYPTO_STATIC_PRIVATE_KEY = ''
 } = process.env
 
-const REQUIRED_CONFIG = ['API_CRYPTO_MODE']
+const REQUIRED_CONFIG = []
 let REDIS_CONNECTION_CONFIG
 
 if (API_CRYPTO_MODE === 'STATIC') {

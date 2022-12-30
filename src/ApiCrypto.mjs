@@ -6,13 +6,14 @@ import CONFIG from './CONFIG.mjs'
 import ApiCryptoError from './ApiCryptoError.mjs'
 import { INVALID_CLIENT_ID_ERROR, PRIVATE_KEY_NOT_FOUND_ERROR } from './ERRORS.mjs'
 
-const { CLIENT_IDS } = CONFIG
+const { MODE, CLIENT_IDS } = CONFIG
+
 const ApiCrypto = {
   initialize,
   getPublicKey,
   decryptKey,
-  encryptData: JoseCrypto.encryptData,
-  decryptData: JoseCrypto.decryptData
+  encryptData,
+  decryptData
 }
 
 export default ApiCrypto
@@ -20,11 +21,15 @@ export default ApiCrypto
 let customValidateClient = async (clientIds) => false
 
 async function initialize (validateClient = customValidateClient) {
+  if (!MODE) { return '' }
+
   customValidateClient = validateClient
-  await Redis.initialize()
+  if (MODE === 'DYNAMIC') { await Redis.initialize() }
 }
 
 async function getPublicKey (clientId) {
+  if (!MODE) { return '' }
+
   const isValidClient = await _validateClientId(clientId)
   if (!isValidClient) {
     throw new ApiCryptoError({ clientId }, INVALID_CLIENT_ID_ERROR)
@@ -35,6 +40,8 @@ async function getPublicKey (clientId) {
 }
 
 async function decryptKey (clientId = '', ciphertextKey = '') {
+  if (!MODE) { return '' }
+
   // Validate Clinet ID
   const isValid = await _validateClientId(clientId)
   if (!isValid) {
@@ -49,6 +56,16 @@ async function decryptKey (clientId = '', ciphertextKey = '') {
   // Decrypt Key
   const plaintextKey = await JoseCrypto.decryptKey(ciphertextKey, privateKey)
   return plaintextKey
+}
+
+function encryptData (data, key) {
+  if (!MODE) { return '' }
+  return JoseCrypto.encryptData(data, key)
+}
+
+function decryptData (payload, key) {
+  if (!MODE) { return '' }
+  return JoseCrypto.decryptData(payload, key)
 }
 
 async function _validateClientId (clientId) {
