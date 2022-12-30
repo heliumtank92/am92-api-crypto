@@ -23,6 +23,7 @@ async function initialize () {
     await redisSdk.initialize
   }
 }
+
 async function getPublicKey (clientId = '') {
   const redisKey = `AC_${clientId}_PUB`
   return redisSdk.get(redisKey)
