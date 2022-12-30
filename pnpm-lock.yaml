@@ -3,13 +3,13 @@ lockfileVersion: 5.4
 specifiers:
   '@am92/jose-crypto': ^1.0.4
   '@am92/kms': ^1.0.3
-  '@am92/redis': ^1.0.1
+  '@am92/redis': ^1.0.2
   moment: ^2.29.4
 
 dependencies:
   '@am92/jose-crypto': 1.0.4
   '@am92/kms': 1.0.3
-  '@am92/redis': 1.0.1
+  '@am92/redis': 1.0.2
   moment: 2.29.4
 
 packages:
@@ -28,8 +28,8 @@ packages:
       - aws-crt
     dev: false
 
-  /@am92/redis/1.0.1:
-    resolution: {integrity: sha512-tHI+A3JbLT4yc7BZCpYdZm3Shaa0aildv2pSMj2jmkOlTYU+wHK0ou2xpesuR+i6k4GGN+a3DjybAzQo2LQRGA==}
+  /@am92/redis/1.0.2:
+    resolution: {integrity: sha512-GxNLC59svHxl8GYULTOwvd1nrh+RzXQBwISr6ypQ9z+qJCv3tXgYDaa1t7bHKW9ZXCTw2c6pbNSFUN/XZZJMcQ==}
     requiresBuild: true
     dependencies:
       redis: 4.5.1
