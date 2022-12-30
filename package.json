@@ -1,0 +1,36 @@
+{
+  "name": "@am92/api-crypto",
+  "version": "1.0.2",
+  "description": "API Encryption and Decryption using JOSE JWE",
+  "type": "module",
+  "main": "src/ApiCrypto.mjs",
+  "scripts": {
+    "preinstall": "npx only-allow pnpm",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": "git@github.com:heliumtank92/am92-api-crypto.git",
+  "homepage": "https://github.com/heliumtank92/am92-api-crypto#readme",
+  "contributors": [
+    {
+      "name": "Ankit Gandhi",
+      "email": "ankitgandhi452@gmail.com",
+      "url": "https://github.com/ankitgandhi452"
+    },
+    {
+      "name": "Mehul Agarwal",
+      "email": "agarwalmehul92@gmail.com",
+      "url": "https://github.com/agarwalmehul"
+    }
+  ],
+  "license": "MIT",
+  "exports": {
+    ".": "./src/ApiCrypto.mjs"
+  },
+  "dependencies": {
+    "@am92/jose-crypto": "^1.0.3",
+    "@am92/kms": "^1.0.3",
+    "@am92/redis": "^1.0.1",
+    "moment": "^2.29.4"
+  },
+  "keywords": []
+}
