@@ -1,7 +1,8 @@
+import { SERVICE } from './CONFIG.mjs'
+
 const DEFAULT_ERROR_MSG = 'Api Crypto Error'
 const DEFAULT_ERROR_STATUS_CODE = 500
 const DEFAULT_ERROR_CODE = 'API_CRYPTO_ERROR'
-
 export default class ApiCryptoError extends Error {
   constructor (e = {}, eMap) {
     if (e._isCustomError && !eMap) { return e }
@@ -17,15 +18,9 @@ export default class ApiCryptoError extends Error {
       code: eCode
     } = e
 
-    const {
-      npm_package_name: pkgName = '',
-      npm_package_version: pkgVersion = ''
-    } = process.env
-    const service = `${pkgName}@${pkgVersion}`
-
     this._isCustomError = true
     this._isApiCryptoError = true
-    this.service = service
+    this.service = SERVICE
     this.message = message || eMessage || eMsg || DEFAULT_ERROR_MSG
     this.statusCode = statusCode || eStatusCode || DEFAULT_ERROR_STATUS_CODE
     this.errorCode = errorCode || eErrorCode || eCode || DEFAULT_ERROR_CODE

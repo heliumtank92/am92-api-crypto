@@ -20,7 +20,7 @@ export default Redis
 async function initialize () {
   if (MODE === 'DYNAMIC') {
     redisSdk = new RedisSdk(REDIS_CONFIG)
-    await redisSdk.initialize
+    await redisSdk.connect()
   }
 }
 

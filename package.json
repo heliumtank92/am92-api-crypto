@@ -1,12 +1,15 @@
 {
   "name": "@am92/api-crypto",
-  "version": "1.0.3",
+  "version": "1.0.8",
   "description": "API Encryption and Decryption using JOSE JWE",
   "type": "module",
   "main": "src/ApiCrypto.mjs",
+  "module": "src/ApiCrypto.mjs",
   "scripts": {
-    "preinstall": "npx only-allow pnpm",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo 'Error: no test specified'",
+    "preversion": "pnpm test",
+    "version": "echo 'Versioning'",
+    "postversion": "git push && git push --tags"
   },
   "repository": "git@github.com:heliumtank92/am92-api-crypto.git",
   "homepage": "https://github.com/heliumtank92/am92-api-crypto#readme",
@@ -27,10 +30,17 @@
     ".": "./src/ApiCrypto.mjs"
   },
   "dependencies": {
-    "@am92/jose-crypto": "^1.0.4",
-    "@am92/kms": "^1.0.3",
-    "@am92/redis": "^1.0.1",
+    "@am92/jose-crypto": "^1.0.8",
+    "@am92/kms": "^1.0.7",
+    "@am92/redis": "^1.0.9",
     "moment": "^2.29.4"
   },
-  "keywords": []
+  "keywords": [
+    "jose",
+    "crypto",
+    "node crypto",
+    "api crypto",
+    "kms",
+    "redis"
+  ]
 }

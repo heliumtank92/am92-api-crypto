@@ -7,6 +7,7 @@ const {
   API_CRYPTO_KMS_AWS_KEY_ID = '',
   API_CRYPTO_KMS_AWS_REGION = 'ap-south-1',
 
+  API_CRYPTO_DEDICATED_REDIS = 'false',
   API_CRYPTO_REDIS_AUTH_ENABLED = 'false',
   API_CRYPTO_REDIS_CHECK_SERVER_IDENTITY = 'false',
   API_CRYPTO_REDIS_HOST = '',
@@ -22,13 +23,12 @@ const {
 } = process.env
 
 const REQUIRED_CONFIG = []
+const DEDICATED_REDIS = API_CRYPTO_DEDICATED_REDIS === 'true'
 let REDIS_CONNECTION_CONFIG
 
 if (API_CRYPTO_MODE === 'STATIC') {
-  REQUIRED_CONFIG.concat([
-    'API_CRYPTO_STATIC_PUBLIC_KEY',
-    'API_CRYPTO_STATIC_PRIVATE_KEY'
-  ])
+  REQUIRED_CONFIG.push('API_CRYPTO_STATIC_PUBLIC_KEY')
+  REQUIRED_CONFIG.push('API_CRYPTO_STATIC_PRIVATE_KEY')
 }
 
 if (API_CRYPTO_MODE === 'DYNAMIC') {
@@ -41,38 +41,43 @@ if (API_CRYPTO_MODE === 'DYNAMIC') {
     REQUIRED_CONFIG.push('API_CRYPTO_KMS_AWS_KEY_ID')
   }
 
-  const REDIS_AUTH_ENABLED = API_CRYPTO_REDIS_AUTH_ENABLED === 'true'
-  const REDIS_CHECK_SERVER_IDENTITY = API_CRYPTO_REDIS_CHECK_SERVER_IDENTITY === 'true'
-  REQUIRED_CONFIG.concat([
-    'API_CRYPTO_REDIS_HOST',
-    'API_CRYPTO_REDIS_PORT'
-  ])
+  if (DEDICATED_REDIS) {
+    const REDIS_AUTH_ENABLED = API_CRYPTO_REDIS_AUTH_ENABLED === 'true'
+    const REDIS_CHECK_SERVER_IDENTITY = API_CRYPTO_REDIS_CHECK_SERVER_IDENTITY === 'true'
 
-  if (REDIS_AUTH_ENABLED) {
-    REQUIRED_CONFIG.push('API_CRYPTO_REDIS_AUTH')
-  }
+    REQUIRED_CONFIG.push('API_CRYPTO_REDIS_HOST')
+    REQUIRED_CONFIG.push('API_CRYPTO_REDIS_PORT')
 
-  REDIS_CONNECTION_CONFIG = {
-    host: API_CRYPTO_REDIS_HOST,
-    port: API_CRYPTO_REDIS_PORT
-  }
+    if (REDIS_AUTH_ENABLED) {
+      REQUIRED_CONFIG.push('API_CRYPTO_REDIS_AUTH')
+    }
 
-  if (REDIS_AUTH_ENABLED) {
-    REDIS_CONNECTION_CONFIG.password = API_CRYPTO_REDIS_AUTH
-  }
+    REDIS_CONNECTION_CONFIG = {
+      host: API_CRYPTO_REDIS_HOST,
+      port: API_CRYPTO_REDIS_PORT
+    }
 
-  if (REDIS_CHECK_SERVER_IDENTITY) {
-    REDIS_CONNECTION_CONFIG.tls = { checkServerIdentity: () => undefined }
+    if (REDIS_AUTH_ENABLED) {
+      REDIS_CONNECTION_CONFIG.password = API_CRYPTO_REDIS_AUTH
+    }
+
+    if (REDIS_CHECK_SERVER_IDENTITY) {
+      REDIS_CONNECTION_CONFIG.tls = { checkServerIdentity: () => undefined }
+    }
   }
 }
 
+const MISSING_CONFIG = []
 REQUIRED_CONFIG.forEach(function (key) {
   if (!process.env[key]) {
-    console.error('[Error] Api Crypto Config Missing:', key)
-    return process.exit(1)
+    MISSING_CONFIG.push(key)
   }
 })
 
+if (MISSING_CONFIG.length) {
+  console.error(`[Error] Api Crypto Config Missing: ${MISSING_CONFIG.join(', ')}`)
+  process.exit(1)
+}
 const KEY_ROTATION_IN_DAYS = parseInt(API_CRYPTO_KEY_ROTATION_IN_DAYS, 10)
 
 if (isNaN(KEY_ROTATION_IN_DAYS)) {
@@ -97,6 +102,8 @@ const CONFIG = {
     }
   },
 
+  DEDICATED_REDIS,
+
   REDIS_CONFIG: {
     CONNECTION_CONFIG: REDIS_CONNECTION_CONFIG,
     KEY_PREFIX: API_CRYPTO_REDIS_KEY_PREFIX
@@ -104,3 +111,11 @@ const CONFIG = {
 }
 
 export default CONFIG
+
+const {
+  npm_package_name: pkgName = '',
+  npm_package_version: pkgVersion = ''
+} = process.env
+const SERVICE = `${pkgName}@${pkgVersion}`
+
+export { SERVICE }
