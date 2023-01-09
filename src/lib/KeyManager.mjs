@@ -9,14 +9,19 @@ const {
   KMS_CONFIG
 } = CONFIG
 
-const kms = new Kms(KMS_CONFIG)
+let kms
 
 const KeyManager = {
+  initialize,
   getPublicKey,
   getPrivateKey
 }
 
 export default KeyManager
+
+function initialize () {
+  kms = new Kms(KMS_CONFIG)
+}
 
 async function getPublicKey (clientId = '') {
   if (MODE === 'STATIC') { return { publicKey: STATIC_PUBLIC_KEY } }

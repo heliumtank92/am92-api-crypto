@@ -32,7 +32,12 @@ async function initialize (validateClient = customValidateClient) {
 
   console.info(`[${SERVICE} ApiCrypto] Initialising...`)
   customValidateClient = validateClient
-  if (MODE === 'DYNAMIC') { await Redis.initialize() }
+
+  if (MODE === 'DYNAMIC') {
+    await Redis.initialize()
+    KeyManager.initialize()
+  }
+
   const successLogFunc = console.success || console.info
   successLogFunc(`[${SERVICE} ApiCrypto] Initialised`)
 }
