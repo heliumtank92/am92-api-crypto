@@ -1,5 +1,6 @@
 const {
-  API_CRYPTO_MODE = '',
+  npm_package_name: pkgName = '',
+  npm_package_version: pkgVersion = '',
 
   API_CRYPTO_KMS_TYPE = '',
   API_CRYPTO_KMS_MASTER_KEY_HEX = '',
@@ -22,6 +23,11 @@ const {
   API_CRYPTO_STATIC_PRIVATE_KEY = ''
 } = process.env
 
+const { API_CRYPTO_MODE } = process.env
+
+const SERVICE = `${pkgName}@${pkgVersion}`
+const fatalLogFunc = console.fatal || console.error
+
 const REQUIRED_CONFIG = []
 const DEDICATED_REDIS = API_CRYPTO_DEDICATED_REDIS === 'true'
 let REDIS_CONNECTION_CONFIG
@@ -29,16 +35,16 @@ let REDIS_CONNECTION_CONFIG
 if (API_CRYPTO_MODE === 'STATIC') {
   REQUIRED_CONFIG.push('API_CRYPTO_STATIC_PUBLIC_KEY')
   REQUIRED_CONFIG.push('API_CRYPTO_STATIC_PRIVATE_KEY')
-}
-
-if (API_CRYPTO_MODE === 'DYNAMIC') {
+} else if (API_CRYPTO_MODE === 'DYNAMIC') {
   REQUIRED_CONFIG.push('API_CRYPTO_KMS_TYPE')
 
   if (API_CRYPTO_KMS_TYPE === 'NODE ') {
     REQUIRED_CONFIG.push('API_CRYPTO_KMS_NODE_MASTER_KEY')
-  }
-  if (API_CRYPTO_KMS_TYPE === 'KMS ') {
+  } else if (API_CRYPTO_KMS_TYPE === 'KMS ') {
     REQUIRED_CONFIG.push('API_CRYPTO_KMS_AWS_KEY_ID')
+  } else {
+    fatalLogFunc(`[${SERVICE} ApiCrypto] Invalid ApiCrypto Config API_CRYPTO_KMS_TYPE. Must be either 'NODE' or 'AWS'`)
+    process.exit(1)
   }
 
   if (DEDICATED_REDIS) {
@@ -64,24 +70,30 @@ if (API_CRYPTO_MODE === 'DYNAMIC') {
     if (REDIS_CHECK_SERVER_IDENTITY) {
       REDIS_CONNECTION_CONFIG.tls = { checkServerIdentity: () => undefined }
     }
+  } else {
+    console.warn(`[${SERVICE} ApiCrypto] ApiCrypto Config API_CRYPTO_DEDICATED_REDIS set to false. Ensure REDIS_ENABLED is set to true`)
   }
+} else if (API_CRYPTO_MODE) {
+  fatalLogFunc(`[${SERVICE} ApiCrypto] Invalid ApiCrypto Config API_CRYPTO_MODE: ${API_CRYPTO_MODE}`)
+  process.exit(1)
 }
 
-const MISSING_CONFIG = []
+const MISSING_CONFIGS = []
 REQUIRED_CONFIG.forEach(function (key) {
   if (!process.env[key]) {
-    MISSING_CONFIG.push(key)
+    MISSING_CONFIGS.push(key)
   }
 })
 
-if (MISSING_CONFIG.length) {
-  console.error(`[Error] Api Crypto Config Missing: ${MISSING_CONFIG.join(', ')}`)
+if (MISSING_CONFIGS.length) {
+  fatalLogFunc(`[${SERVICE} ApiCrypto] ApiCrypto Config Missing: ${MISSING_CONFIGS.join(', ')}`)
   process.exit(1)
 }
+
 const KEY_ROTATION_IN_DAYS = parseInt(API_CRYPTO_KEY_ROTATION_IN_DAYS, 10)
 
 if (isNaN(KEY_ROTATION_IN_DAYS)) {
-  console.error('[Error] Api Crypto Config invalid value for key:', API_CRYPTO_KEY_ROTATION_IN_DAYS)
+  fatalLogFunc(`[${SERVICE} ApiCrypto] Invalid ApiCrypto Integer Configs:`, { KEY_ROTATION_IN_DAYS })
   process.exit(1)
 }
 
@@ -111,11 +123,5 @@ const CONFIG = {
 }
 
 export default CONFIG
-
-const {
-  npm_package_name: pkgName = '',
-  npm_package_version: pkgVersion = ''
-} = process.env
-const SERVICE = `${pkgName}@${pkgVersion}`
 
 export { SERVICE }

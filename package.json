@@ -1,6 +1,6 @@
 {
   "name": "@am92/api-crypto",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "API Encryption and Decryption using JOSE JWE",
   "type": "module",
   "main": "src/ApiCrypto.mjs",
@@ -31,8 +31,8 @@
   },
   "dependencies": {
     "@am92/jose-crypto": "^1.0.8",
-    "@am92/kms": "^1.0.7",
-    "@am92/redis": "^1.0.9",
+    "@am92/kms": "^1.0.9",
+    "@am92/redis": "^1.0.10",
     "moment": "^2.29.4"
   },
   "keywords": [
