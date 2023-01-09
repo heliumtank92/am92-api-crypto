@@ -2,9 +2,13 @@ import JoseCrypto from '@am92/jose-crypto'
 import KeyManager from './lib/KeyManager.mjs'
 import Redis from './lib/Redis.mjs'
 import CONFIG, { SERVICE } from './CONFIG.mjs'
+import DEBUG from './DEBUG.mjs'
 
 import ApiCryptoError from './ApiCryptoError.mjs'
-import { INVALID_CLIENT_ID_ERROR, PRIVATE_KEY_NOT_FOUND_ERROR } from './ERRORS.mjs'
+import {
+  INVALID_CLIENT_ID_ERROR,
+  PRIVATE_KEY_NOT_FOUND_ERROR
+} from './ERRORS.mjs'
 
 const { MODE, CLIENT_IDS } = CONFIG
 
@@ -18,22 +22,23 @@ const ApiCrypto = {
 
 export default ApiCrypto
 
-let customValidateClient = async (clientIds) => false
+let customValidateClient = async (clientId) => false
 
 async function initialize (validateClient = customValidateClient) {
-  if (!MODE) {
+  if (!MODE || DEBUG.disableCrypto) {
     console.info(`[${SERVICE} ApiCrypto] Bypassed`)
     return
   }
 
-  console.trace(`[${SERVICE} ApiCrypto] Initialising...`)
+  console.info(`[${SERVICE} ApiCrypto] Initialising...`)
   customValidateClient = validateClient
   if (MODE === 'DYNAMIC') { await Redis.initialize() }
-  console.info(`[${SERVICE} ApiCrypto] Initialised`)
+  const successLogFunc = console.success || console.info
+  successLogFunc(`[${SERVICE} ApiCrypto] Initialised`)
 }
 
 async function getPublicKey (clientId) {
-  if (!MODE) { return '' }
+  if (!MODE || DEBUG.disableCrypto) { return '' }
 
   const isValidClient = await _validateClientId(clientId)
   if (!isValidClient) {
@@ -45,7 +50,7 @@ async function getPublicKey (clientId) {
 }
 
 async function decryptKey (clientId = '', ciphertextKey = '') {
-  if (!MODE) { return '' }
+  if (!MODE || DEBUG.disableCrypto) { return '' }
 
   // Validate Clinet ID
   const isValid = await _validateClientId(clientId)
@@ -53,23 +58,23 @@ async function decryptKey (clientId = '', ciphertextKey = '') {
     throw new ApiCryptoError({ clientId }, INVALID_CLIENT_ID_ERROR)
   }
 
+  // Get Private Key
   const { privateKey, publicKey, newKey } = await KeyManager.getPrivateKey(clientId)
   if (newKey) {
     throw new ApiCryptoError({ publicKey }, PRIVATE_KEY_NOT_FOUND_ERROR)
   }
 
-  // Decrypt Key
-  const plaintextKey = await JoseCrypto.decryptKey(ciphertextKey, privateKey)
-  return plaintextKey
+  // Decrypt Encrypted Encryption Key
+  return JoseCrypto.decryptKey(ciphertextKey, privateKey)
 }
 
 function encryptData (data, key) {
-  if (!MODE) { return '' }
+  if (!MODE || DEBUG.disableCrypto) { return '' }
   return JoseCrypto.encryptData(data, key)
 }
 
 function decryptData (payload, key) {
-  if (!MODE) { return '' }
+  if (!MODE || DEBUG.disableCrypto) { return '' }
   return JoseCrypto.decryptData(payload, key)
 }
 
