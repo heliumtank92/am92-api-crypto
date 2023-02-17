@@ -30,9 +30,9 @@
     ".": "./src/ApiCrypto.mjs"
   },
   "dependencies": {
-    "@am92/jose-crypto": "^1.0.9",
-    "@am92/kms": "^1.0.10",
-    "@am92/redis": "^1.0.10",
+    "@am92/jose-crypto": "^1.0.11",
+    "@am92/kms": "^1.0.11",
+    "@am92/redis": "^1.0.11",
     "moment": "^2.29.4"
   },
   "keywords": [
