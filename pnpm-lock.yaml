@@ -1,26 +1,26 @@
 lockfileVersion: 5.4
 
 specifiers:
-  '@am92/jose-crypto': ^1.0.14
-  '@am92/kms': ^1.0.14
-  '@am92/redis': ^1.0.14
+  '@am92/jose-crypto': ^1.0.15
+  '@am92/kms': ^1.0.15
+  '@am92/redis': ^1.0.15
   moment: ^2.29.4
 
 dependencies:
-  '@am92/jose-crypto': 1.0.14
-  '@am92/kms': 1.0.14
-  '@am92/redis': 1.0.14
+  '@am92/jose-crypto': 1.0.15
+  '@am92/kms': 1.0.15
+  '@am92/redis': 1.0.15
   moment: 2.29.4
 
 packages:
 
-  /@am92/jose-crypto/1.0.14:
-    resolution: {integrity: sha512-wzTc9hkSxmZmOCoLxP1k0mqtqh0QiDCrNtsqBKVClSsG+fjBR6sBNirmk3qmfd5A+BBlhVitoZo/SjKI+0EcTQ==}
+  /@am92/jose-crypto/1.0.15:
+    resolution: {integrity: sha512-Fdru1pIPa14rd2TqMRCzvg3p+Zm+S9kQ5b956ph1V+8Hbh/1lk58AUD480f4ad+wxQDBLTjyffin+mlUS7urAg==}
     requiresBuild: true
     dev: false
 
-  /@am92/kms/1.0.14:
-    resolution: {integrity: sha512-s0cgJ9kHS4UiAkA+sNZ4lObIntInARx0IfcRp/Kt2nsgRUpCvDDRT3WnabVFNFnlGhB5J4IESsdvM2LryiXpVw==}
+  /@am92/kms/1.0.15:
+    resolution: {integrity: sha512-Ve3hpFlBIZ+HUFOaYu8p1hEShfe2bY6TKIiQ4fMkMPwudxqXTUvaZZY97D/78iutRYAwqxsjPM57OpFZnWbL5A==}
     requiresBuild: true
     dependencies:
       '@aws-sdk/client-kms': 3.282.0
@@ -28,8 +28,8 @@ packages:
       - aws-crt
     dev: false
 
-  /@am92/redis/1.0.14:
-    resolution: {integrity: sha512-KjzD52upopcDE6pq8kEuLVNL5xL7gs16X1cKPk4zE7qiZCEzXh4nEtzeWdU3aUoRU8cAmz4rTFVEocH1/95skQ==}
+  /@am92/redis/1.0.15:
+    resolution: {integrity: sha512-9yWMvc0w+0j5P/am1DBGWIXQmnJms6r7iYIIF31vG8HDv2hL5e+DR3Yye/muoUd3yn9rN+KoRosCc6+0ZHOw3A==}
     requiresBuild: true
     dependencies:
       redis: 4.6.5

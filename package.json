@@ -3,8 +3,8 @@
   "version": "1.0.15",
   "description": "API Encryption and Decryption using JOSE JWE",
   "type": "module",
-  "main": "inex.mjs",
-  "module": "inex.mjs",
+  "main": "./inex.mjs",
+  "module": "./inex.mjs",
   "scripts": {
     "test": "echo 'Error: no test specified'",
     "preversion": "pnpm test",
@@ -30,9 +30,9 @@
     ".": "./inex.mjs"
   },
   "dependencies": {
-    "@am92/jose-crypto": "^1.0.14",
-    "@am92/kms": "^1.0.14",
-    "@am92/redis": "^1.0.14",
+    "@am92/jose-crypto": "^1.0.15",
+    "@am92/kms": "^1.0.15",
+    "@am92/redis": "^1.0.15",
     "moment": "^2.29.4"
   },
   "keywords": [
