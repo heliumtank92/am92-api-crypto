@@ -3,8 +3,8 @@
   "version": "1.0.14",
   "description": "API Encryption and Decryption using JOSE JWE",
   "type": "module",
-  "main": "src/ApiCrypto.mjs",
-  "module": "src/ApiCrypto.mjs",
+  "main": "inex.mjs",
+  "module": "inex.mjs",
   "scripts": {
     "test": "echo 'Error: no test specified'",
     "preversion": "pnpm test",
@@ -27,12 +27,12 @@
   ],
   "license": "MIT",
   "exports": {
-    ".": "./src/ApiCrypto.mjs"
+    ".": "./inex.mjs"
   },
   "dependencies": {
-    "@am92/jose-crypto": "^1.0.13",
-    "@am92/kms": "^1.0.13",
-    "@am92/redis": "^1.0.13",
+    "@am92/jose-crypto": "^1.0.14",
+    "@am92/kms": "^1.0.14",
+    "@am92/redis": "^1.0.14",
     "moment": "^2.29.4"
   },
   "keywords": [
