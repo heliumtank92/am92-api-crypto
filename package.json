@@ -3,8 +3,8 @@
   "version": "1.0.16",
   "description": "API Encryption and Decryption using JOSE JWE",
   "type": "module",
-  "main": "./inex.mjs",
-  "module": "./inex.mjs",
+  "main": "./index.mjs",
+  "module": "./index.mjs",
   "scripts": {
     "test": "echo 'Error: no test specified'",
     "preversion": "pnpm test",
@@ -27,7 +27,7 @@
   ],
   "license": "MIT",
   "exports": {
-    ".": "./inex.mjs"
+    ".": "./index.mjs"
   },
   "dependencies": {
     "@am92/jose-crypto": "^1.0.15",
