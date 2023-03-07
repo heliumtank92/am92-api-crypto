@@ -1,6 +1,6 @@
 {
   "name": "@am92/api-crypto",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "API Encryption and Decryption using JOSE JWE",
   "type": "module",
   "main": "inex.mjs",
