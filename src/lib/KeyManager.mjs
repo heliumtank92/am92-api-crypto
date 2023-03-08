@@ -19,11 +19,11 @@ const KeyManager = {
 
 export default KeyManager
 
-function initialize () {
+function initialize() {
   kms = new Kms(KMS_CONFIG)
 }
 
-async function getPublicKey (clientId = '') {
+async function getPublicKey(clientId = '') {
   if (MODE === 'STATIC') { return { publicKey: STATIC_PUBLIC_KEY } }
 
   const publicKey = await Redis.getPublicKey(clientId)
@@ -33,7 +33,7 @@ async function getPublicKey (clientId = '') {
   return keyPair
 }
 
-async function getPrivateKey (clientId = '') {
+async function getPrivateKey(clientId = '') {
   if (MODE === 'STATIC') { return { privateKey: STATIC_PRIVATE_KEY } }
 
   const privateKey = await Redis.getPrivateKey(clientId)
@@ -50,7 +50,7 @@ async function getPrivateKey (clientId = '') {
   return keyPair
 }
 
-async function _generateKeyPairAndCache (clientId = '') {
+async function _generateKeyPairAndCache(clientId = '') {
   const { publicKey, privateKey, encryptedPrivateKey } = await kms.generateKeyPair()
   await Promise.allSettled([
     Redis.setPublicKey(clientId, publicKey),

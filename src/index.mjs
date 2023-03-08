@@ -24,7 +24,7 @@ export default ApiCrypto
 
 let customValidateClient = async (clientId) => false
 
-async function initialize (validateClient = customValidateClient) {
+async function initialize(validateClient = customValidateClient) {
   if (!MODE || DEBUG.disableCrypto) {
     console.info(`[${SERVICE} ApiCrypto] Bypassed`)
     return
@@ -42,7 +42,7 @@ async function initialize (validateClient = customValidateClient) {
   successLogFunc(`[${SERVICE} ApiCrypto] Initialised`)
 }
 
-async function getPublicKey (clientId) {
+async function getPublicKey(clientId) {
   if (!MODE || DEBUG.disableCrypto) { return '' }
 
   const isValidClient = await _validateClientId(clientId)
@@ -54,7 +54,7 @@ async function getPublicKey (clientId) {
   return publicKey
 }
 
-async function decryptKey (clientId = '', ciphertextKey = '') {
+async function decryptKey(clientId = '', ciphertextKey = '') {
   if (!MODE || DEBUG.disableCrypto) { return '' }
 
   // Validate Clinet ID
@@ -73,17 +73,17 @@ async function decryptKey (clientId = '', ciphertextKey = '') {
   return JoseCrypto.decryptKey(ciphertextKey, privateKey)
 }
 
-function encryptData (data, key) {
+function encryptData(data, key) {
   if (!MODE || DEBUG.disableCrypto) { return '' }
   return JoseCrypto.encryptData(data, key)
 }
 
-function decryptData (payload, key) {
+function decryptData(payload, key) {
   if (!MODE || DEBUG.disableCrypto) { return '' }
   return JoseCrypto.decryptData(payload, key)
 }
 
-async function _validateClientId (clientId) {
+async function _validateClientId(clientId) {
   if (!clientId) { return false }
 
   // Validate if client ids present in config provided
