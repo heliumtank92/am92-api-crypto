@@ -1,15 +1,30 @@
 {
   "name": "@am92/api-crypto",
-  "version": "1.0.12",
+  "version": "1.1.1",
   "description": "API Encryption and Decryption using JOSE JWE",
   "type": "module",
-  "main": "src/ApiCrypto.mjs",
-  "module": "src/ApiCrypto.mjs",
+  "exports": {
+    ".": {
+      "types": "./types/index.d.mts",
+      "import": "./src/index.mjs"
+    }
+  },
+  "types": "./types/index.d.mts",
+  "module": "./src/index.mjs",
+  "main": "./src/index.mjs",
+  "dependencies": {
+    "@am92/jose-crypto": "^1.1.1",
+    "@am92/kms": "^1.1.1",
+    "@am92/redis": "^1.1.0",
+    "moment": "^2.29.4"
+  },
   "scripts": {
     "test": "echo 'Error: no test specified'",
+    "generate:types": "rm -rf types && npx -p typescript tsc",
     "preversion": "pnpm test",
     "version": "echo 'Versioning'",
-    "postversion": "git push && git push --tags"
+    "postversion": "git push && git push --tags && npm run publish:pkg",
+    "publish:pkg": "npm publish"
   },
   "repository": "git@github.com:heliumtank92/am92-api-crypto.git",
   "homepage": "https://github.com/heliumtank92/am92-api-crypto#readme",
@@ -26,14 +41,8 @@
     }
   ],
   "license": "MIT",
-  "exports": {
-    ".": "./src/ApiCrypto.mjs"
-  },
-  "dependencies": {
-    "@am92/jose-crypto": "^1.0.9",
-    "@am92/kms": "^1.0.10",
-    "@am92/redis": "^1.0.10",
-    "moment": "^2.29.4"
+  "publishConfig": {
+    "access": "public"
   },
   "keywords": [
     "jose",
