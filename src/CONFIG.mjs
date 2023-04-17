@@ -59,8 +59,10 @@ if (API_CRYPTO_MODE === 'STATIC') {
     }
 
     REDIS_CONNECTION_CONFIG = {
-      host: API_CRYPTO_REDIS_HOST,
-      port: API_CRYPTO_REDIS_PORT
+      socket: {
+        host: API_CRYPTO_REDIS_HOST,
+        port: API_CRYPTO_REDIS_PORT
+      }
     }
 
     if (REDIS_AUTH_ENABLED) {
