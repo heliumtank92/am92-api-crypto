@@ -8,8 +8,8 @@ dependencies:
     specifier: ^1.1.1
     version: 1.1.1
   '@am92/redis':
-    specifier: ^1.1.1
-    version: 1.1.1
+    specifier: ^1.1.2
+    version: 1.1.2
   moment:
     specifier: ^2.29.4
     version: 2.29.4
@@ -30,8 +30,8 @@ packages:
       - aws-crt
     dev: false
 
-  /@am92/redis@1.1.1:
-    resolution: {integrity: sha512-2RmzqPipCEga4xg6PU3qC/QeHmo1cFzkNuyHu/zDfax8yb+JPj1PAvPbmJjwhZ+f6W3W8rkSrWx5BWW/w5fbrg==}
+  /@am92/redis@1.1.2:
+    resolution: {integrity: sha512-+ztLp4B+36wETZ0esltWATA5iSkDfrQJoLBS3UDqOgRjgfKRXxh18YPpAlEiO465ngxWIVGLaokk/cS9BSpYag==}
     dependencies:
       redis: 4.6.5
     dev: false
