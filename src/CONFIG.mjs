@@ -10,7 +10,6 @@ const {
 
   API_CRYPTO_DEDICATED_REDIS = 'false',
   API_CRYPTO_REDIS_AUTH_ENABLED = 'false',
-  API_CRYPTO_REDIS_CHECK_SERVER_IDENTITY = 'false',
   API_CRYPTO_REDIS_HOST = '',
   API_CRYPTO_REDIS_PORT = '',
   API_CRYPTO_REDIS_KEY_PREFIX = '',
@@ -49,7 +48,6 @@ if (API_CRYPTO_MODE === 'STATIC') {
 
   if (DEDICATED_REDIS) {
     const REDIS_AUTH_ENABLED = API_CRYPTO_REDIS_AUTH_ENABLED === 'true'
-    const REDIS_CHECK_SERVER_IDENTITY = API_CRYPTO_REDIS_CHECK_SERVER_IDENTITY === 'true'
 
     REQUIRED_CONFIG.push('API_CRYPTO_REDIS_HOST')
     REQUIRED_CONFIG.push('API_CRYPTO_REDIS_PORT')
@@ -59,16 +57,15 @@ if (API_CRYPTO_MODE === 'STATIC') {
     }
 
     REDIS_CONNECTION_CONFIG = {
-      host: API_CRYPTO_REDIS_HOST,
-      port: API_CRYPTO_REDIS_PORT
+      socket: {
+        host: API_CRYPTO_REDIS_HOST,
+        port: API_CRYPTO_REDIS_PORT
+      }
     }
 
     if (REDIS_AUTH_ENABLED) {
+      REDIS_CONNECTION_CONFIG.tls = true
       REDIS_CONNECTION_CONFIG.password = API_CRYPTO_REDIS_AUTH
-    }
-
-    if (REDIS_CHECK_SERVER_IDENTITY) {
-      REDIS_CONNECTION_CONFIG.tls = { checkServerIdentity: () => undefined }
     }
   } else {
     console.warn(`[${SERVICE} ApiCrypto] ApiCrypto Config API_CRYPTO_DEDICATED_REDIS set to false. Ensure REDIS_ENABLED is set to true`)
