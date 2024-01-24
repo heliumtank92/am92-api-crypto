@@ -11,3 +11,11 @@ export namespace PRIVATE_KEY_NOT_FOUND_ERROR {
     const errorCode_1: string;
     export { errorCode_1 as errorCode };
 }
+export namespace MISSING_ENCRYPTED_AES_KEY_ERROR {
+    const message_2: string;
+    export { message_2 as message };
+    const statusCode_2: number;
+    export { statusCode_2 as statusCode };
+    const errorCode_2: string;
+    export { errorCode_2 as errorCode };
+}

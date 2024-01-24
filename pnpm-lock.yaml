@@ -1,6 +1,13 @@
 lockfileVersion: '6.0'
 
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
 dependencies:
+  '@am92/aes-crypto':
+    specifier: ^2.0.0
+    version: 2.0.0
   '@am92/jose-crypto':
     specifier: ^1.1.1
     version: 1.1.1
@@ -15,6 +22,10 @@ dependencies:
     version: 2.29.4
 
 packages:
+
+  /@am92/aes-crypto@2.0.0:
+    resolution: {integrity: sha512-W94wKi2Vsj0K9XxbkENj2URHKajpybZqcg9gbcJnZFCtn5YlmddSbO4C3I5B9gBH8EYLOVgQsVszliL8odVRgg==}
+    dev: false
 
   /@am92/jose-crypto@1.1.1:
     resolution: {integrity: sha512-zVgSvKEjJVaL6muxwLaDzlwrfgg9h6l5pt1ELwILecGbU4uvoXg0BKhwUyYJuAc2l83y2jcOh32qb2MGv1epjQ==}

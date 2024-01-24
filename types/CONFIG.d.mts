@@ -1,7 +1,9 @@
 export default CONFIG;
 declare namespace CONFIG {
     export { API_CRYPTO_MODE as MODE };
+    export { API_CRYPTO_TYPE as TYPE };
     export { API_CRYPTO_CLIENT_IDS as CLIENT_IDS };
+    export { API_CRYPTO_STATIC_AES_KEY as STATIC_AES_KEY };
     export { API_CRYPTO_STATIC_PUBLIC_KEY as STATIC_PUBLIC_KEY };
     export { API_CRYPTO_STATIC_PRIVATE_KEY as STATIC_PRIVATE_KEY };
     export { API_CRYPTO_KEY_ROTATION_IN_DAYS as KEY_ROTATION_IN_DAYS };
@@ -22,7 +24,9 @@ declare namespace CONFIG {
 }
 export const SERVICE: string;
 declare const API_CRYPTO_MODE: any;
+declare const API_CRYPTO_TYPE: any;
 declare const API_CRYPTO_CLIENT_IDS: any;
+declare const API_CRYPTO_STATIC_AES_KEY: any;
 declare const API_CRYPTO_STATIC_PUBLIC_KEY: any;
 declare const API_CRYPTO_STATIC_PRIVATE_KEY: any;
 declare const API_CRYPTO_KEY_ROTATION_IN_DAYS: any;

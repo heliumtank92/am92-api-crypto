@@ -1,7 +1,12 @@
+import API_CRYPTO_TYPES from './Constants/API_CRYPTO_TYPES.mjs'
+import API_CRYPTO_MODES from './Constants/API_CRYPTO_MODES.mjs'
+
 const {
   npm_package_name: pkgName = '',
   npm_package_version: pkgVersion = '',
 
+  API_CRYPTO_MODE = '',
+  API_CRYPTO_TYPE = 'JOSE',
   API_CRYPTO_KMS_TYPE = '',
   API_CRYPTO_KMS_MASTER_KEY_HEX = '',
   API_CRYPTO_KMS_MASTER_IV_HEX = '',
@@ -18,11 +23,10 @@ const {
   API_CRYPTO_KEY_ROTATION_IN_DAYS = '1',
   API_CRYPTO_CLIENT_IDS = 'BROWSER',
 
+  API_CRYPTO_STATIC_AES_KEY = '',
   API_CRYPTO_STATIC_PUBLIC_KEY = '',
   API_CRYPTO_STATIC_PRIVATE_KEY = ''
 } = process.env
-
-const { API_CRYPTO_MODE } = process.env
 
 const SERVICE = `${pkgName}@${pkgVersion}`
 const fatalLogFunc = console.fatal || console.error
@@ -31,18 +35,40 @@ const REQUIRED_CONFIG = []
 const DEDICATED_REDIS = API_CRYPTO_DEDICATED_REDIS === 'true'
 let REDIS_CONNECTION_CONFIG
 
-if (API_CRYPTO_MODE === 'STATIC') {
-  REQUIRED_CONFIG.push('API_CRYPTO_STATIC_PUBLIC_KEY')
-  REQUIRED_CONFIG.push('API_CRYPTO_STATIC_PRIVATE_KEY')
+if (API_CRYPTO_TYPE && !API_CRYPTO_TYPES.ENUM.includes(API_CRYPTO_TYPE)) {
+  fatalLogFunc(
+    `[${SERVICE} ApiCrypto] Invalid ApiCrypto Config API_CRYPTO_TYPE: ${API_CRYPTO_TYPE}`
+  )
+  process.exit(1)
+}
+
+if (API_CRYPTO_MODE && !API_CRYPTO_MODES.ENUM.includes(API_CRYPTO_MODE)) {
+  fatalLogFunc(
+    `[${SERVICE} ApiCrypto] Invalid ApiCrypto Config API_CRYPTO_MODE: ${API_CRYPTO_MODE}`
+  )
+  process.exit(1)
+}
+
+if (API_CRYPTO_MODE === API_CRYPTO_MODES.MAP.STATIC) {
+  if (API_CRYPTO_TYPE === API_CRYPTO_TYPES.MAP.AES) {
+    REQUIRED_CONFIG.push('API_CRYPTO_STATIC_AES_KEY')
+  }
+
+  if (API_CRYPTO_TYPE === API_CRYPTO_TYPES.MAP.JOSE) {
+    REQUIRED_CONFIG.push('API_CRYPTO_STATIC_PUBLIC_KEY')
+    REQUIRED_CONFIG.push('API_CRYPTO_STATIC_PRIVATE_KEY')
+  }
 } else if (API_CRYPTO_MODE === 'DYNAMIC') {
   REQUIRED_CONFIG.push('API_CRYPTO_KMS_TYPE')
 
-  if (API_CRYPTO_KMS_TYPE === 'NODE ') {
+  if (API_CRYPTO_KMS_TYPE === 'NODE') {
     REQUIRED_CONFIG.push('API_CRYPTO_KMS_NODE_MASTER_KEY')
-  } else if (API_CRYPTO_KMS_TYPE === 'KMS ') {
+  } else if (API_CRYPTO_KMS_TYPE === 'AWS') {
     REQUIRED_CONFIG.push('API_CRYPTO_KMS_AWS_KEY_ID')
   } else {
-    fatalLogFunc(`[${SERVICE} ApiCrypto] Invalid ApiCrypto Config API_CRYPTO_KMS_TYPE. Must be either 'NODE' or 'AWS'`)
+    fatalLogFunc(
+      `[${SERVICE} ApiCrypto] Invalid ApiCrypto Config API_CRYPTO_KMS_TYPE. Must be either 'NODE' or 'AWS'`
+    )
     process.exit(1)
   }
 
@@ -68,11 +94,10 @@ if (API_CRYPTO_MODE === 'STATIC') {
       REDIS_CONNECTION_CONFIG.password = API_CRYPTO_REDIS_AUTH
     }
   } else {
-    console.warn(`[${SERVICE} ApiCrypto] ApiCrypto Config API_CRYPTO_DEDICATED_REDIS set to false. Ensure REDIS_ENABLED is set to true`)
+    console.warn(
+      `[${SERVICE} ApiCrypto] ApiCrypto Config API_CRYPTO_DEDICATED_REDIS set to false. Ensure REDIS_ENABLED is set to true`
+    )
   }
-} else if (API_CRYPTO_MODE) {
-  fatalLogFunc(`[${SERVICE} ApiCrypto] Invalid ApiCrypto Config API_CRYPTO_MODE: ${API_CRYPTO_MODE}`)
-  process.exit(1)
 }
 
 const MISSING_CONFIGS = []
@@ -83,20 +108,28 @@ REQUIRED_CONFIG.forEach(function (key) {
 })
 
 if (MISSING_CONFIGS.length) {
-  fatalLogFunc(`[${SERVICE} ApiCrypto] ApiCrypto Config Missing: ${MISSING_CONFIGS.join(', ')}`)
+  fatalLogFunc(
+    `[${SERVICE} ApiCrypto] ApiCrypto Config Missing: ${MISSING_CONFIGS.join(
+      ', '
+    )}`
+  )
   process.exit(1)
 }
 
 const KEY_ROTATION_IN_DAYS = parseInt(API_CRYPTO_KEY_ROTATION_IN_DAYS, 10)
 
 if (isNaN(KEY_ROTATION_IN_DAYS)) {
-  fatalLogFunc(`[${SERVICE} ApiCrypto] Invalid ApiCrypto Integer Configs:`, { KEY_ROTATION_IN_DAYS })
+  fatalLogFunc(`[${SERVICE} ApiCrypto] Invalid ApiCrypto Integer Configs:`, {
+    KEY_ROTATION_IN_DAYS
+  })
   process.exit(1)
 }
 
 const CONFIG = {
   MODE: API_CRYPTO_MODE,
+  TYPE: API_CRYPTO_TYPE,
   CLIENT_IDS: API_CRYPTO_CLIENT_IDS,
+  STATIC_AES_KEY: API_CRYPTO_STATIC_AES_KEY,
   STATIC_PUBLIC_KEY: API_CRYPTO_STATIC_PUBLIC_KEY,
   STATIC_PRIVATE_KEY: API_CRYPTO_STATIC_PRIVATE_KEY,
   KEY_ROTATION_IN_DAYS: API_CRYPTO_KEY_ROTATION_IN_DAYS,

@@ -3,6 +3,7 @@ declare namespace KeyManager {
     export { initialize };
     export { getPublicKey };
     export { getPrivateKey };
+    export { getAesKey };
 }
 declare function initialize(): void;
 declare function getPublicKey(clientId?: string): Promise<{
@@ -20,4 +21,7 @@ declare function getPrivateKey(clientId?: string): Promise<{
     newKey: boolean;
 } | {
     privateKey: any;
+}>;
+declare function getAesKey(encryptedAesKey?: string): Promise<{
+    aesKey: any;
 }>;

@@ -1,7 +1,5 @@
 {
-  "include": [
-    "./src/*.mjs"
-  ],
+  "include": ["./src/*.mjs", "src/Constants/ERRORS.mjs"],
   "compilerOptions": {
     "moduleResolution": "node16",
     "allowJs": true,

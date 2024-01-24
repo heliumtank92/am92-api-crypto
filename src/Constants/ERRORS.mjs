@@ -9,3 +9,9 @@ export const PRIVATE_KEY_NOT_FOUND_ERROR = {
   statusCode: 400,
   errorCode: 'ApiCrypto::PRIVATE_KEY_NOT_FOUND'
 }
+
+export const MISSING_ENCRYPTED_AES_KEY_ERROR = {
+  message: 'Missing Encrypted Aes Key',
+  statusCode: 400,
+  errorCode: 'ApiCrypto::MISSING_ENCRYPTED_AES_KEY'
+}

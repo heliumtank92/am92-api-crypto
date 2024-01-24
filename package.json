@@ -13,6 +13,7 @@
   "module": "./src/index.mjs",
   "main": "./src/index.mjs",
   "dependencies": {
+    "@am92/aes-crypto": "^2.0.0",
     "@am92/jose-crypto": "^1.1.1",
     "@am92/kms": "^1.1.1",
     "@am92/redis": "^1.1.2",
