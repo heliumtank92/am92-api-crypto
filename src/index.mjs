@@ -8,6 +8,7 @@ import DEBUG from './DEBUG.mjs'
 import ApiCryptoError from './ApiCryptoError.mjs'
 import { INVALID_CLIENT_ID_ERROR } from './Constants/ERRORS.mjs'
 import API_CRYPTO_TYPES from './Constants/API_CRYPTO_TYPES.mjs'
+import API_CRYPTO_MODES from './Constants/API_CRYPTO_MODES.mjs'
 
 const { MODE, TYPE, CLIENT_IDS } = CONFIG
 
@@ -32,9 +33,12 @@ async function initialize(validateClient = customValidateClient) {
   console.info(`[${SERVICE} ApiCrypto] Initialising...`)
   customValidateClient = validateClient
 
-  if (MODE === 'DYNAMIC') {
-    await Redis.initialize()
+  if (MODE === API_CRYPTO_MODES.MAP.DYNAMIC) {
     KeyManager.initialize()
+    // TODO: Debug for Redis Connection
+    if (TYPE === API_CRYPTO_TYPES.MAP.JOSE) {
+      await Redis.initialize()
+    }
   }
 
   const successLogFunc = console.success || console.info

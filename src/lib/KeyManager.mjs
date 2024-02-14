@@ -72,15 +72,17 @@ async function getAesKey(encryptedAesKey = '') {
     throw new ApiCryptoError({}, MISSING_ENCRYPTED_AES_KEY_ERROR)
   }
 
-  const cachedAesKey = await Redis.getAesKey(encryptedAesKey)
-  if (cachedAesKey) {
-    return { aesKey: cachedAesKey }
-  }
+  // TODO: Debug for Redis Connection
+  // const cachedAesKey = await Redis.getAesKey(encryptedAesKey)
+  // if (cachedAesKey) {
+  //   return { aesKey: cachedAesKey }
+  // }
 
   const aesKey = await kms.decrypt(encryptedAesKey, {
     plainTextFormat: 'base64'
   })
-  await Redis.setAesKey(encryptedAesKey, aesKey)
+  // TODO: Debug for Redis Connection
+  // await Redis.setAesKey(encryptedAesKey, aesKey)
   return { aesKey }
 }
 
