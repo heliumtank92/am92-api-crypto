@@ -1,18 +1,17 @@
 import { AesCrypto } from '@am92/aes-crypto'
-import JoseCrypto from '@am92/jose-crypto'
-import KeyManager from './lib/KeyManager.mjs'
-import Redis from './lib/Redis.mjs'
-import CONFIG, { SERVICE } from './CONFIG.mjs'
-import DEBUG from './DEBUG.mjs'
+import { JoseCrypto } from '@am92/jose-crypto'
+import KeyManager from './lib/KeyManager'
+import Redis from './lib/Redis'
+import CONFIG, { SERVICE } from './CONFIG'
+import DEBUG from './DEBUG'
 
-import ApiCryptoError from './ApiCryptoError.mjs'
-import { INVALID_CLIENT_ID_ERROR } from './Constants/ERRORS.mjs'
-import API_CRYPTO_TYPES from './Constants/API_CRYPTO_TYPES.mjs'
-import API_CRYPTO_MODES from './Constants/API_CRYPTO_MODES.mjs'
+import { ApiCryptoError } from './ApiCryptoError'
+import { INVALID_CLIENT_ID_ERROR, PRIVATE_KEY_NOT_FOUND_ERROR } from './ERRORS'
+import { API_CRYPTO_MODES, API_CRYPTO_TYPES, ClientValidator } from './TYPES'
 
 const { MODE, TYPE, CLIENT_IDS } = CONFIG
 
-const ApiCrypto = {
+export const ApiCrypto = {
   initialize,
   getPublicKey,
   decryptKey,
@@ -20,12 +19,12 @@ const ApiCrypto = {
   decryptData
 }
 
-export default ApiCrypto
+let customValidateClient: ClientValidator = async () => false
 
-let customValidateClient = async clientId => false
-
-async function initialize(validateClient = customValidateClient) {
-  if (!MODE || DEBUG.disableCrypto) {
+async function initialize(
+  validateClient: ClientValidator = customValidateClient
+) {
+  if (!MODE || MODE === API_CRYPTO_MODES.MAP.DISABLED || DEBUG.disableCrypto) {
     console.info(`[${SERVICE} ApiCrypto] Bypassed`)
     return
   }
@@ -45,8 +44,13 @@ async function initialize(validateClient = customValidateClient) {
   successLogFunc(`[${SERVICE} ApiCrypto] Initialised`)
 }
 
-async function getPublicKey(clientId) {
-  if (!MODE || DEBUG.disableCrypto) {
+async function getPublicKey(clientId: string) {
+  if (
+    !MODE ||
+    MODE === API_CRYPTO_MODES.MAP.DISABLED ||
+    TYPE === API_CRYPTO_TYPES.MAP.AES ||
+    DEBUG.disableCrypto
+  ) {
     return ''
   }
 
@@ -59,8 +63,8 @@ async function getPublicKey(clientId) {
   return publicKey
 }
 
-async function decryptKey(clientId = '', ciphertextKey = '') {
-  if (!MODE || DEBUG.disableCrypto) {
+async function decryptKey(clientId: string = '', ciphertextKey: string = '') {
+  if (!MODE || MODE === API_CRYPTO_MODES.MAP.DISABLED || DEBUG.disableCrypto) {
     return ''
   }
 
@@ -87,10 +91,12 @@ async function decryptKey(clientId = '', ciphertextKey = '') {
     const { aesKey } = await KeyManager.getAesKey(ciphertextKey)
     return aesKey
   }
+
+  return ''
 }
 
-function encryptData(data, key) {
-  if (!MODE || DEBUG.disableCrypto) {
+function encryptData(data: any, key: string) {
+  if (!MODE || MODE === API_CRYPTO_MODES.MAP.DISABLED || DEBUG.disableCrypto) {
     return ''
   }
 
@@ -101,11 +107,13 @@ function encryptData(data, key) {
   if (TYPE === API_CRYPTO_TYPES.MAP.AES) {
     return AesCrypto.encryptData(data, key)
   }
+
+  return ''
 }
 
-function decryptData(payload, key) {
-  if (!MODE || DEBUG.disableCrypto) {
-    return ''
+function decryptData(payload: string, key: string) {
+  if (!MODE || MODE === API_CRYPTO_MODES.MAP.DISABLED || DEBUG.disableCrypto) {
+    return {}
   }
 
   if (TYPE === API_CRYPTO_TYPES.MAP.JOSE) {
@@ -115,11 +123,13 @@ function decryptData(payload, key) {
   if (TYPE === API_CRYPTO_TYPES.MAP.AES) {
     return AesCrypto.decryptData(payload, key)
   }
+
+  return {}
 }
 
-async function _validateClientId(clientId) {
-  if (!clientId) {
-    return false
+async function _validateClientId(clientId: string = ''): Promise<boolean> {
+  if (!MODE || MODE === API_CRYPTO_MODES.MAP.DISABLED || DEBUG.disableCrypto) {
+    return true
   }
 
   // Validate if client ids present in config provided
@@ -128,5 +138,6 @@ async function _validateClientId(clientId) {
   }
 
   // Call provided validate client functions
-  return customValidateClient(clientId)
+  const isCustomValid = await customValidateClient(clientId)
+  return isCustomValid
 }

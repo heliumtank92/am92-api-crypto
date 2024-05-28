@@ -1,9 +1,10 @@
-import Kms from '@am92/kms'
-import Redis from './Redis.mjs'
-import CONFIG from '../CONFIG.mjs'
-import API_CRYPTO_MODES from '../Constants/API_CRYPTO_MODES.mjs'
-import ApiCryptoError from '../ApiCryptoError.mjs'
-import { MISSING_ENCRYPTED_AES_KEY_ERROR } from '../Constants/ERRORS.mjs'
+import { AwsKms, generateKmsInstance, NodeKms } from '@am92/kms'
+import Redis from './Redis'
+import CONFIG from '../CONFIG'
+import { ApiCryptoError } from '../ApiCryptoError'
+import { MISSING_ENCRYPTED_AES_KEY_ERROR } from '../ERRORS'
+import { API_CRYPTO_MODES } from '../TYPES'
+import { AesKeyObject, RsaKeyObject } from '../INTERNAL'
 
 const {
   MODE,
@@ -13,7 +14,7 @@ const {
   KMS_CONFIG
 } = CONFIG
 
-let kms
+let kms: AwsKms | NodeKms
 
 const KeyManager = {
   initialize,
@@ -25,45 +26,70 @@ const KeyManager = {
 export default KeyManager
 
 function initialize() {
-  kms = new Kms(KMS_CONFIG)
+  kms = generateKmsInstance(KMS_CONFIG)
 }
 
-async function getPublicKey(clientId = '') {
+async function getPublicKey(clientId = ''): Promise<RsaKeyObject> {
   if (MODE === API_CRYPTO_MODES.MAP.STATIC) {
-    return { publicKey: STATIC_PUBLIC_KEY }
+    return {
+      publicKey: STATIC_PUBLIC_KEY,
+      privateKey: '',
+      encryptedPrivateKey: '',
+      newKey: false
+    }
   }
 
   const publicKey = await Redis.getPublicKey(clientId)
   if (publicKey) {
-    return { publicKey }
+    return {
+      publicKey,
+      privateKey: '',
+      encryptedPrivateKey: '',
+      newKey: false
+    }
   }
 
   const keyPair = await _generateKeyPairAndCache()
   return keyPair
 }
 
-async function getPrivateKey(clientId = '') {
+async function getPrivateKey(clientId = ''): Promise<RsaKeyObject> {
   if (MODE === API_CRYPTO_MODES.MAP.STATIC) {
-    return { privateKey: STATIC_PRIVATE_KEY }
+    return {
+      publicKey: '',
+      privateKey: STATIC_PRIVATE_KEY,
+      encryptedPrivateKey: '',
+      newKey: false
+    }
   }
 
   const privateKey = await Redis.getPrivateKey(clientId)
   if (privateKey) {
-    return { privateKey }
+    return {
+      publicKey: '',
+      privateKey,
+      encryptedPrivateKey: '',
+      newKey: false
+    }
   }
 
   const encryptedPrivateKey = await Redis.getEncryptedPrivateKey(clientId)
   if (encryptedPrivateKey) {
     const privateKey = await kms.decrypt(encryptedPrivateKey)
     await Redis.setPrivateKey(clientId, privateKey)
-    return { privateKey }
+    return {
+      publicKey: '',
+      privateKey,
+      encryptedPrivateKey,
+      newKey: false
+    }
   }
 
   const keyPair = await _generateKeyPairAndCache()
   return keyPair
 }
 
-async function getAesKey(encryptedAesKey = '') {
+async function getAesKey(encryptedAesKey = ''): Promise<AesKeyObject> {
   if (MODE === API_CRYPTO_MODES.MAP.STATIC) {
     return { aesKey: STATIC_AES_KEY }
   }
@@ -88,7 +114,7 @@ async function getAesKey(encryptedAesKey = '') {
 
 async function _generateKeyPairAndCache(clientId = '') {
   const { publicKey, privateKey, encryptedPrivateKey } =
-    await kms.generateKeyPair()
+    await kms.generateDataKeyPair()
 
   await Promise.allSettled([
     Redis.setPublicKey(clientId, publicKey),
