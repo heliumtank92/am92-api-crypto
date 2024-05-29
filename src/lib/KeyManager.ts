@@ -6,6 +6,7 @@ import { MISSING_ENCRYPTED_AES_KEY_ERROR } from '../ERRORS'
 import { API_CRYPTO_MODES } from '../TYPES'
 import { AesKeyObject, RsaKeyObject } from '../INTERNAL'
 
+/** @ignore */
 const {
   MODE,
   STATIC_PUBLIC_KEY,
@@ -14,8 +15,10 @@ const {
   KMS_CONFIG
 } = CONFIG
 
+/** @ignore */
 let kms: AwsKms | NodeKms
 
+/** @ignore */
 const KeyManager = {
   initialize,
   getPublicKey,
@@ -25,10 +28,12 @@ const KeyManager = {
 
 export default KeyManager
 
+/** @ignore */
 function initialize() {
   kms = generateKmsInstance(KMS_CONFIG)
 }
 
+/** @ignore */
 async function getPublicKey(clientId = ''): Promise<RsaKeyObject> {
   if (MODE === API_CRYPTO_MODES.MAP.STATIC) {
     return {
@@ -53,6 +58,7 @@ async function getPublicKey(clientId = ''): Promise<RsaKeyObject> {
   return keyPair
 }
 
+/** @ignore */
 async function getPrivateKey(clientId = ''): Promise<RsaKeyObject> {
   if (MODE === API_CRYPTO_MODES.MAP.STATIC) {
     return {
@@ -89,6 +95,7 @@ async function getPrivateKey(clientId = ''): Promise<RsaKeyObject> {
   return keyPair
 }
 
+/** @ignore */
 async function getAesKey(encryptedAesKey = ''): Promise<AesKeyObject> {
   if (MODE === API_CRYPTO_MODES.MAP.STATIC) {
     return { aesKey: STATIC_AES_KEY }
@@ -112,6 +119,7 @@ async function getAesKey(encryptedAesKey = ''): Promise<AesKeyObject> {
   return { aesKey }
 }
 
+/** @ignore */
 async function _generateKeyPairAndCache(clientId = '') {
   const { publicKey, privateKey, encryptedPrivateKey } =
     await kms.generateDataKeyPair()

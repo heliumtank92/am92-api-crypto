@@ -36,6 +36,7 @@ const {
   API_CRYPTO_STATIC_PRIVATE_KEY = ''
 } = process.env
 
+/** @ignore */
 const errorLogFunc = console.fatal || console.error
 
 /** @ignore */
